@@ -5,6 +5,8 @@ distance-vector algorithm.
 
 import packet
 
+print('Hello World \n')
+
 class Entity:
     '''
     Entity that represents a node in the network.

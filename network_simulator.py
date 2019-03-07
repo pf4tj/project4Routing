@@ -67,7 +67,7 @@ class NetworkSimulator:
 
             # Check that the destination is valid (i.e. it is a neighbor
             # of the sending node).
-            for neighbor,cost in self.entity_links[entity_index]:
+            for neighbor, cost in self.entity_links[entity_index]:
                 if packet.get_destination() == neighbor:
                     break
             else:
