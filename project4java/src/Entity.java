@@ -36,7 +36,11 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] initialize_costs(Pair<Integer, Integer> neighbor_costs[]) {
-
+        Packet(int destination, int[] costs)
+        this.source = 1;
+        this.destination = 1;
+        int[] array = new int[2];
+        return array;
     }
 
     // This function is called when a packet arrives for this entity.
@@ -47,7 +51,7 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] update(Packet packet) {
-
+        return
     }
 
     // This function is used by the simulator to retrieve the calculated routes
