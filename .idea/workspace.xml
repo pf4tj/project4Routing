@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="be2f9ece-b355-4035-83c4-c2c6032f461f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/entity.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/network_simulator.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/packet.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/project.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routing/NetworkSimulator.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routing/Packet.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routing/Pair.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routing/Project.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routing/entity.java" beforeDir="false" />
-    </list>
+    <list default="true" id="be2f9ece-b355-4035-83c4-c2c6032f461f" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,7 +13,7 @@
     <session id="1351996429">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="2" />
           <entry key="project.open.time.20" value="1" />
           <entry key="project.open.time.4" value="1" />
           <entry key="project.opened" value="2" />
@@ -85,7 +74,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552181966162" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552182431242" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/java" />
   </component>
   <component name="RunDashboard">
@@ -115,7 +104,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2534413" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
