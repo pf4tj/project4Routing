@@ -23,7 +23,7 @@ import java.util.Map;
 public class Entity {
     int index;
     int number_of_entities;
-    private boolean debug = false;
+    private boolean debug = true;
     int[][] entityMatrix;
     Pair<Integer, Integer> entityMatrix2;
     Pair<Integer, Integer>[] entityMatrix3;
@@ -70,13 +70,16 @@ public class Entity {
 //        }
 //        System.out.println();
 //        System.out.println();
-        System.out.println("Initialized entityMatrix. ");
-        for (int i = 0; i < number_of_entities; i++) {
+        if (debug) {
+            System.out.println("Entity DEBUG SET TO TRUE");
+            System.out.printf("Initialized entityMatrix for entity id = %d \n", index);
+            for (int i = 0; i < number_of_entities; i++) {
 //            if (i == 0) System.out.print(i + " ");
-            for (int j = 0; j < number_of_entities; j++) {
-                System.out.print(entityMatrix[i][j] + "\t");
+                for (int j = 0; j < number_of_entities; j++) {
+                    System.out.print(entityMatrix[i][j] + "\t");
+                }
+                System.out.println();
             }
-            System.out.println();
         }
 
 //        for (int i = 0; i < number_of_entities; i++) {
@@ -108,39 +111,46 @@ public class Entity {
     // sent from this entity (if any) to neighboring entities.
     public Packet[] initialize_costs(Pair<Integer, Integer> neighbor_costs[]) {
         int numPackets = neighbor_costs.length;
-        int [] costArr = new int[numPackets];
+        int[] costArr = new int[numPackets];
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
 //            for (int j = 0; j < numPackets; j++) {
-                if ((neighbor_costs[i].y) < entityMatrix[index - 1][i]) {
+            if ((neighbor_costs[i].y) < entityMatrix[index - 1][i]) {
 //                    System.out.println("in condition");
 //                    System.out.println("printing out neighbour_costs.x : " + (neighbor_costs[i].x));
 //                    System.out.println("printing out entityMatrix : " + entityMatrix[index-1][i]);
-                    entityMatrix[index-1][i] = (neighbor_costs[i].y);
-                }
+                entityMatrix[index - 1][i] = (neighbor_costs[i].y);
+            }
 //                System.out.println("printing out neighbour_costs.x : " + (neighbor_costs[i].x));
 //                System.out.println("printing out neighbour_costs.y : " + (neighbor_costs[i].y));
 //                System.out.println("printing out entityMatrix : " + entityMatrix[i][j]);
-                costArr[i] = neighbor_costs[i].y;
+            costArr[i] = neighbor_costs[i].y;
 //            }
         }
-        System.out.printf("Updated entityMatrix when calling initialize costs on entity id =  %d. \n", index);
-        for (int i = 0; i < number_of_entities; i++) {
-//            if (i == 0) System.out.print(i + " ");
-            for (int j = 0; j < number_of_entities; j++) {
-                System.out.print(entityMatrix[i][j] + "\t");
-            }
+        if (debug) {
             System.out.println();
+            System.out.printf("Updated entityMatrix when calling initialize costs on entity id =  %d. \n", index);
+            for (int i = 0; i < number_of_entities; i++) {
+//            if (i == 0) System.out.print(i + " ");
+                for (int j = 0; j < number_of_entities; j++) {
+                    System.out.print(entityMatrix[i][j] + "\t");
+                }
+                System.out.println();
+            }
         }
 
 
-
-        for (int i = 0; i < numPackets; i++){
-            Packet packet = new Packet(neighbor_costs[i].x,costArr);
+        for (int i = 0; i < numPackets; i++) {
+            Packet packet = new Packet(neighbor_costs[i].x, costArr);
             packetArr[i] = packet;
         }
-        for (Packet p: packetArr){
-            System.out.print(p + " , ");
+
+        if (debug){
+            System.out.println();
+            System.out.println("calling tostring method for this packet. [is costs]");
+            for (Packet p : packetArr) {
+                System.out.print(p + " , ");
+            }
         }
         return packetArr;
     }
@@ -167,6 +177,9 @@ public class Entity {
     // first element of the array is the next hop and cost to entity index 0,
     // second element is to entity index 1, etc.
     public Pair<Integer, Integer>[] get_all_costs() {
+        for (int i = 0; i < number_of_entities; i++){
+            System.out.println();
+        }
         return null;
     }
 
