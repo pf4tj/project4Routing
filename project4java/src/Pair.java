@@ -7,4 +7,8 @@ public class Pair<X, Y> {
 		this.x = x;
 		this.y = y;
 	}
+//	pierce
+	public String toString(){//overriding the toString() method
+		return "x value =  " + x + ", y value = " + y;
+	}
 }
