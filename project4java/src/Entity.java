@@ -52,33 +52,32 @@ public class Entity {
             entityMap.put(i,9999);
         }
         for (int i = 0; i < number_of_entities; i++) {        // it will run you through the lines
-            entityMatrix3[i] = new Pair(i,9999);
+            entityMatrix3[i] = new Pair(i,999);
             for (int j = 0; j < number_of_entities; j++) {    // this will run you through each cell in the raw selected
                 if (i == j) {
                     entityMatrix[i][j] = 0;
                     entityMap.put(j,0);
                 }
                 else{
-                    entityMatrix[i][j] = 9999;
-                    entityMap.put(j,9999);
+                    entityMatrix[i][j] = 999;
+                    entityMap.put(j,999);
                 }
             }
         }
         //node table 3 from 3 to 1, 2, 3
-        for (int i = 0; i < number_of_entities;i++){
-            System.out.print(entityMatrix[index-1][i] + " ");
-        }
-        System.out.println();
-        System.out.println();
-
+//        for (int i = 0; i < number_of_entities;i++){
+//            System.out.print(entityMatrix[index-1][i] + " ");
+//        }
+//        System.out.println();
+//        System.out.println();
+        System.out.println("Initialized entityMatrix. ");
         for (int i = 0; i < number_of_entities; i++) {
+//            if (i == 0) System.out.print(i + " ");
             for (int j = 0; j < number_of_entities; j++) {
-                System.out.print(entityMatrix[i][j] + " ");
+                System.out.print(entityMatrix[i][j] + "\t");
             }
             System.out.println();
         }
-
-        System.out.println(entityMap);
 
 //        for (int i = 0; i < number_of_entities; i++) {
 //            for (int j = 0; j < number_of_entities; j++) {
@@ -111,14 +110,30 @@ public class Entity {
         int numPackets = neighbor_costs.length;
         int [] costArr = new int[numPackets];
         Packet[] packetArr = new Packet[numPackets];
-        for (int i = 0; i < numPackets; i++){
-            if ((neighbor_costs[i].x +1)== entityMatrix [index-1][i]){
-                System.out.println("in condition");
-            }
-            System.out.println("printing out neighbour_costs : " + (neighbor_costs[i].y));
-            System.out.println("printing out entityMatrix : " +entityMatrix [index-1][i]);
-            costArr[i] = neighbor_costs[i].y;
+        for (int i = 0; i < numPackets; i++) {
+//            for (int j = 0; j < numPackets; j++) {
+                if ((neighbor_costs[i].y) < entityMatrix[index - 1][i]) {
+//                    System.out.println("in condition");
+//                    System.out.println("printing out neighbour_costs.x : " + (neighbor_costs[i].x));
+//                    System.out.println("printing out entityMatrix : " + entityMatrix[index-1][i]);
+                    entityMatrix[index-1][i] = (neighbor_costs[i].y);
+                }
+//                System.out.println("printing out neighbour_costs.x : " + (neighbor_costs[i].x));
+//                System.out.println("printing out neighbour_costs.y : " + (neighbor_costs[i].y));
+//                System.out.println("printing out entityMatrix : " + entityMatrix[i][j]);
+                costArr[i] = neighbor_costs[i].y;
+//            }
         }
+        System.out.printf("Updated entityMatrix when calling initialize costs on entity id =  %d. \n", index);
+        for (int i = 0; i < number_of_entities; i++) {
+//            if (i == 0) System.out.print(i + " ");
+            for (int j = 0; j < number_of_entities; j++) {
+                System.out.print(entityMatrix[i][j] + "\t");
+            }
+            System.out.println();
+        }
+
+
 
         for (int i = 0; i < numPackets; i++){
             Packet packet = new Packet(neighbor_costs[i].x,costArr);
