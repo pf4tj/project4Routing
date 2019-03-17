@@ -14,6 +14,7 @@ public class Main {
 //        System.out.println(network1[0][0]);
 
         e.initialize_costs(network1[0]);
+        e.update()
 
 
     }

@@ -41,6 +41,13 @@ public class Packet {
         return this.costs;
     }
 
+    public void set_costs(int index, int costs){
+        if (index > this.costs.length) {
+            throw new IllegalArgumentException();
+        }
+        this.costs[index] = costs;
+    }
+
     // Manually set the source of the packet. This should only be called by the
     // simulator.
     public void set_source(int source) {

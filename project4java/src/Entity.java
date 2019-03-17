@@ -163,8 +163,22 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] update(Packet packet) {
-
-        return null;
+        int numPackets = packet.get_costs().length;
+        int[] costArr = new int[numPackets];
+        Packet[] packetArr = new Packet[numPackets];
+        for (int j = 0; j < numPackets; j++) {
+            for (int i = 0; i < numPackets; i++) {
+                if ((packet.get_costs()[i]) < entityMatrix[index - 1][i]) {
+//
+                    entityMatrix[index - 1][i] = (packet.get_costs()[i]);
+                }
+                packetArr[i].set_costs(i, entityMatrix[index - 1][i]);
+            }
+        }
+        if (debug) {
+            System.out.println();
+        }
+        return packetArr;
     }
 
     // This function is used by the simulator to retrieve the calculated routes
