@@ -114,43 +114,42 @@ public class Entity {
         int[] costArr = new int[numPackets];
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
-//            for (int j = 0; j < numPackets; j++) {
-            if ((neighbor_costs[i].y) < entityMatrix[index - 1][i]) {
-//                    System.out.println("in condition");
-//                    System.out.println("printing out neighbour_costs.x : " + (neighbor_costs[i].x));
-//                    System.out.println("printing out entityMatrix : " + entityMatrix[index-1][i]);
-                entityMatrix[index - 1][i] = (neighbor_costs[i].y);
+            if ((neighbor_costs[i].y) != entityMatrix[index - 1][i] && ((index-1) != i)) {
+                this.entityMatrix[index - 1][i] = (neighbor_costs[i].y);
             }
-//                System.out.println("printing out neighbour_costs.x : " + (neighbor_costs[i].x));
-//                System.out.println("printing out neighbour_costs.y : " + (neighbor_costs[i].y));
-//                System.out.println("printing out entityMatrix : " + entityMatrix[i][j]);
             costArr[i] = neighbor_costs[i].y;
-//            }
         }
+        for (int i = 0; i < numPackets; i++) {
+            Packet p = new Packet(neighbor_costs[i].x, costArr);
+            p.set_source(this.index);
+            packetArr[i] = p;
+        }
+
         if (debug) {
+            System.out.println();
+            for (int i = 0; i < numPackets; i++) {
+                System.out.println("printing out neighbour costs : entity idx = " + neighbor_costs[i].x + " cost = " +  neighbor_costs[i].y);
+            }
+            System.out.println();
             System.out.println();
             System.out.printf("Updated entityMatrix when calling initialize costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
-//            if (i == 0) System.out.print(i + " ");
                 for (int j = 0; j < number_of_entities; j++) {
                     System.out.print(entityMatrix[i][j] + "\t");
                 }
                 System.out.println();
             }
-        }
-
-
-        for (int i = 0; i < numPackets; i++) {
-            Packet packet = new Packet(neighbor_costs[i].x, costArr);
-            packetArr[i] = packet;
-        }
-
-        if (debug){
             System.out.println();
-            System.out.println("calling tostring method for this packet. [is costs]");
-            for (Packet p : packetArr) {
-                System.out.print(p + " , ");
+            System.out.printf("Printing out costArr values \n", index);
+            for (int i = 0; i < number_of_entities; i++){
+                System.out.print(costArr[i] + " , ");
             }
+            System.out.println();
+            System.out.println("printing out packets to send");
+            for (int i = 0; i < number_of_entities; i++) {
+                System.out.print(packetArr[i] + " , ");
+            }
+
         }
         return packetArr;
     }
@@ -168,19 +167,24 @@ public class Entity {
         Packet[] packetArr = new Packet[numPackets];
         for (int j = 0; j < numPackets; j++) {
             for (int i = 0; i < numPackets; i++) {
-                if ((packet.get_costs()[i]) < entityMatrix[index - 1][i]) {
-//
-                    entityMatrix[index - 1][i] = (packet.get_costs()[i]);
+                if ((packet.get_costs()[i]) != entityMatrix[j][i] && j != i) {
+                    entityMatrix[j][i] = (packet.get_costs()[i]);
                 }
-                packetArr[i].set_costs(i, entityMatrix[index - 1][i]);
             }
         }
+
         if (debug) {
             System.out.println();
+            System.out.printf("Updated entityMatrix when calling update costs on entity id =  %d. \n", index);
+            for (int i = 0; i < number_of_entities; i++) {
+                for (int j = 0; j < number_of_entities; j++) {
+                    System.out.print(entityMatrix[i][j] + "\t");
+                }
+                System.out.println();
+            }
         }
         return packetArr;
     }
-
     // This function is used by the simulator to retrieve the calculated routes
     // and costs from an entity. This is most useful at the end of the
     // simulation to collect the resulting routing state.
@@ -191,13 +195,12 @@ public class Entity {
     // first element of the array is the next hop and cost to entity index 0,
     // second element is to entity index 1, etc.
     public Pair<Integer, Integer>[] get_all_costs() {
+//        implement main vector here pierce
         for (int i = 0; i < number_of_entities; i++){
             System.out.println();
         }
         return null;
     }
-
-
 
     // Return the best next hop for a packet with the given destination.
     //
