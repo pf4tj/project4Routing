@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 //d_X(y) = cost of least path from x to y
@@ -23,13 +24,11 @@ import java.util.Map;
 public class Entity {
     int index;
     int number_of_entities;
+    public static final int maxVal = 999;
     private boolean debug = true;
     int[][] entityMatrix;
-    Pair<Integer, Integer> entityMatrix2;
-    Pair<Integer, Integer>[] entityMatrix3;
     Map<Integer, Integer> entityMap;
-    Pair<Integer, Integer> forwardingTable[];
-    java.util.HashMap<String, Integer> map = new java.util.HashMap<String, Integer>();
+    LinkedHashMap<Integer,Integer> entityMap2;
     int[] distancevector;
     Vector<Vector<Integer>> networkVec = new Vector<Vector<Integer>>();
     int[] costVec;
@@ -46,25 +45,31 @@ public class Entity {
         this.index = entity_index;
         this.number_of_entities = number_of_entities;
         this.entityMatrix = new int[number_of_entities][number_of_entities];
-        this.entityMatrix3 = new Pair[number_of_entities];
         this.entityMap = new HashMap<>(number_of_entities);
+        this.entityMap2 = new LinkedHashMap<Integer,Integer>(number_of_entities);
         for (int i = 0; i < number_of_entities; i++){
             entityMap.put(i,9999);
         }
         for (int i = 0; i < number_of_entities; i++) {        // it will run you through the lines
-            entityMatrix3[i] = new Pair(i,999);
             for (int j = 0; j < number_of_entities; j++) {    // this will run you through each cell in the raw selected
                 if (i == j) {
                     entityMatrix[i][j] = 0;
-                    entityMap.put(j,0);
                 }
                 else{
-                    entityMatrix[i][j] = 999;
-                    entityMap.put(j,999);
+                    entityMatrix[i][j] = maxVal;
                 }
             }
         }
-        //node table 3 from 3 to 1, 2, 3
+        for (int i = 0; i < number_of_entities; i++) {
+            if (i == this.index - 1){
+                entityMap.put(i,0);
+                entityMap2.put(i,0);
+            }else{
+                entityMap.put(i,999);
+                entityMap2.put(i,999);
+            }
+        }
+            //node table 3 from 3 to 1, 2, 3
 //        for (int i = 0; i < number_of_entities;i++){
 //            System.out.print(entityMatrix[index-1][i] + " ");
 //        }
@@ -79,6 +84,14 @@ public class Entity {
                     System.out.print(entityMatrix[i][j] + "\t");
                 }
                 System.out.println();
+            }
+            System.out.println();
+            for (int i : entityMap2.keySet()){
+                System.out.println("index " + i + " :  " + entityMap2.get(i));
+            }
+            System.out.println();
+            for (int i : entityMap.keySet()){
+                System.out.println("index " + i + " :  " + entityMap.get(i));
             }
         }
 
@@ -114,7 +127,8 @@ public class Entity {
         int[] costArr = new int[numPackets];
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
-            if ((neighbor_costs[i].y) != entityMatrix[index - 1][i] && ((index-1) != i)) {
+            if (i == (index-1)) continue;
+            if ((neighbor_costs[i].y) != entityMatrix[index - 1][i]) {
                 this.entityMatrix[index - 1][i] = (neighbor_costs[i].y);
             }
             costArr[i] = neighbor_costs[i].y;
@@ -167,7 +181,9 @@ public class Entity {
         Packet[] packetArr = new Packet[numPackets];
         for (int j = 0; j < numPackets; j++) {
             for (int i = 0; i < numPackets; i++) {
-                if ((packet.get_costs()[i]) != entityMatrix[j][i] && j != i) {
+                if (j == i) continue;
+//                if (packet.get_costs())
+                if ((packet.get_costs()[i]) != entityMatrix[j][i]) {
                     entityMatrix[j][i] = (packet.get_costs()[i]);
                 }
             }
@@ -199,6 +215,8 @@ public class Entity {
         for (int i = 0; i < number_of_entities; i++){
             System.out.println();
         }
+        if (debug);
+
         return null;
     }
 
@@ -211,6 +229,7 @@ public class Entity {
     // next hop.
     public int forward_next_hop(int destination) {
 
+        if (debug);
         return 1;
     }
 }
