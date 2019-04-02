@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.lang.Math;
 
 //d_X(y) = cost of least path from x to y
 /**
@@ -25,13 +26,15 @@ import java.util.Arrays;
 public class Entity {
     int index;
     int number_of_entities;
+    int greatestneighborsize;
     int distancesArr[];
     int[][] entityMatrix;
     public static final int maxVal = 999;
     public boolean debug = true;
-    public  boolean debugConstructor = false;
-    public boolean debugInit = false;
-    public boolean debugUpdate = false;
+    public  boolean debugConstructor = true;
+    public boolean debugInit = true;
+    public boolean debugUpdate = true
+            ;
     public boolean debugCosts = false;
     public boolean debugForward = false;
 
@@ -89,6 +92,7 @@ public class Entity {
         int numPackets = neighbor_costs.length;
         int[] costArr = new int[numPackets];
         Packet[] packetArr = new Packet[numPackets];
+        System.out.println(neighbor_costs.length + " ---");
         for (int i = 0; i < numPackets; i++) {
             if (i == (index)) continue;
             if ((neighbor_costs[i].y) != this.maxVal) {
@@ -100,6 +104,19 @@ public class Entity {
 
             costArr[i] = neighbor_costs[i].y;
         }
+        for(int i = 1; i <= number_of_entities-1; i++) {
+            for(int source = 0; source < number_of_entities; source++) {
+                for(int dest = 0; dest < number_of_entities; dest++) {
+                    if(entityMatrix[source][dest] != maxVal) {
+                        if(distancesArr[dest] > distancesArr[source] + entityMatrix[source][dest]) {
+                            distancesArr[dest] = distancesArr[source] + entityMatrix[source][dest];
+                        }
+                    }
+                }
+            }
+        }
+
+
 
         for (int i = 0; i < numPackets; i++) {
             Packet p = new Packet(neighbor_costs[i].x, costArr);
@@ -128,7 +145,7 @@ public class Entity {
             }
             System.out.println();
             System.out.println("printing out packets to send");
-            for (int i = 0; i < number_of_entities; i++) {
+            for (int i = 0; i < numPackets; i++) {
                 System.out.print(packetArr[i] + " , ");
             }
 
@@ -147,19 +164,23 @@ public class Entity {
     public Packet[] update(Packet packet) {
         int numPackets = packet.get_costs().length;
         int[] incomingCostArr = packet.get_costs();
+        System.out.println("------------");
+        System.out.println("incoming cost array");
+        for (int i = 0; i < numPackets; i++){
+            System.out.print(incomingCostArr[i] + " , ");
+        }
+        System.out.println("------------");
         int[] destArr = new int [number_of_entities];
         Packet[] packetArr = new Packet[numPackets];
-        for (int src = 0; src < numPackets; src++) {
-            for (int dest = 0; dest < numPackets; dest++) {
-                if (src == dest) continue;
-                else if ((this.entityMatrix[src][dest] != this.maxVal)){
-                     if (entityMatrix[src][dest] > (incomingCostArr[src] + this.entityMatrix[src][dest])){
-                         distancesArr[dest] = incomingCostArr[src] + this.entityMatrix[src][dest];
-                     }
-                    if (entityMatrix[dest][src] > (incomingCostArr[src] + this.entityMatrix[src][dest])){
-                        entityMatrix[dest][src] = incomingCostArr[src] + this.entityMatrix[src][dest];
+        for (int node = 1; node < number_of_entities; node++) {
+            for (int src = 0; src < numPackets; src++) {
+                for (int dest = 0; dest < numPackets; dest++) {
+                    if (src == dest) continue;
+                    if (distancesArr[dest] > (incomingCostArr[src] + this.entityMatrix[src][dest])) {
+                        distancesArr[dest] = incomingCostArr[src] + this.entityMatrix[src][dest];
                     }
                 }
+//                System.out.print(incomingCostArr[src] + " , ");
             }
         }
 
