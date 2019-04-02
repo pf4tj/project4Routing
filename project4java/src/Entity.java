@@ -29,9 +29,9 @@ public class Entity {
     int[][] entityMatrix;
     public static final int maxVal = 999;
     public boolean debug = true;
-    public  boolean debugConstructor = true;
+    public  boolean debugConstructor = false;
     public boolean debugInit = true;
-    public boolean debugUpdate = false;
+    public boolean debugUpdate = true;
 
     // This initialization function will be called at the beginning of the
     // simulation to setup all entities.
@@ -144,8 +144,10 @@ public class Entity {
     public Packet[] update(Packet packet) {
         int numPackets = packet.get_costs().length;
         int[] costArr = new int[numPackets];
+        int[] destArr = new int [number_of_entities];
         Packet[] packetArr = new Packet[numPackets];
         for (int src = 0; src < numPackets; src++) {
+            destArr[src] = src + 1;
             for (int dest = 0; dest < numPackets; dest++) {
                 if (src == dest) continue;
                 else if (this.entityMatrix[src][dest] != this.maxVal){
@@ -153,8 +155,13 @@ public class Entity {
                          distancesArr[dest] = distancesArr[src] + this.entityMatrix[src][dest];
                      }
                 }
-//                if (packet.get_costs())
             }
+        }
+
+        for (int i = 0; i < numPackets; i++) {
+            Packet p = new Packet(destArr[i], distancesArr);
+            p.set_source(this.index);
+            packetArr[i] = p;
         }
 
         if (debugUpdate) {
