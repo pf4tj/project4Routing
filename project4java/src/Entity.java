@@ -237,11 +237,13 @@ public class Entity {
 //        implement main vector here pierce
         Pair<Integer, Integer> costs[];
         int next_hop;
-        for (int dest = 0; i < number_of_entities; dest++){
+        for (int dest = 0; dest < number_of_entities; dest++){
+          /*
           for(int src = 0; src < distancesArr.length; src++) {
             if(src == this.index || src == dest) continue;
-            if()
+            //if()
           }
+          */
             System.out.println();
 
             //Find best possible next_hop (forward_next_hop)
