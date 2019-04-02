@@ -66,7 +66,7 @@ public class Entity {
                 System.out.print(costs[i] + "\t");
             }
             System.out.println();
-            System.out.printf("Initialized entityMatrix for entity id = %d \n", index);
+            System.out.printf("Initialized nodeTable for entity id = %d \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
                     System.out.print(nodeTable[i][j] + "\t");
@@ -114,7 +114,7 @@ public class Entity {
                 System.out.print(costs[i] + " , ");
             }
             System.out.println();
-            System.out.printf("Updated entityMatrix when calling initialize costs on entity id =  %d. \n", index);
+            System.out.printf("Updated nodeTable when calling initialize costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
                     System.out.print(nodeTable[i][j] + "\t");
@@ -142,6 +142,7 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] update(Packet packet) {
+        System.out.println("-------------------------------------------------------");
         System.out.println("UPDATE PACKETS");
         System.out.printf("INDEX = %d \n", index);
         boolean update = false;
@@ -157,8 +158,8 @@ public class Entity {
         for (int dest = 0; dest < number_of_entities; dest++) {
             int cheapest = incomingCostArr[dest];
             int throughNode = dest;
-            if (dest == index) continue;
-            System.out.printf("cheapest = %d \n", cheapest);
+            if ((dest == index) || (incomingCostArr[dest]==0)) continue;
+//            System.out.printf("cheapest = %d \n", cheapest);
 //            System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n",index,cheapest,dest,throughNode);
             for (int src = 0; src < costs.length; src++){
                 if (src == index || incomingCostArr[src] == maxVal || incomingCostArr[src]==0){
@@ -195,6 +196,7 @@ public class Entity {
         }
 
         if (debugUpdate) {
+            System.out.println("-------------------------------------------------------");
             System.out.println("UPDATE PACKETS");
             System.out.println("incoming cost array");
             for (int i = 0; i < numPackets; i++){
