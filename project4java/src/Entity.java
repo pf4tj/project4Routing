@@ -92,7 +92,6 @@ public class Entity {
         int numPackets = neighbor_costs.length;
         int[] costArr = new int[numPackets];
         Packet[] packetArr = new Packet[numPackets];
-        System.out.println(neighbor_costs.length + " ---");
         for (int i = 0; i < numPackets; i++) {
             if (i == (index)) continue;
             if ((neighbor_costs[i].y) != this.maxVal) {
