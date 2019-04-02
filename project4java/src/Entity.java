@@ -187,10 +187,13 @@ public class Entity {
     // second element is to entity index 1, etc.
     public Pair<Integer, Integer>[] get_all_costs() {
 //        implement main vector here pierce
-        Pair<Integer, Integer>[] costs = new Pair<Integer, Integer>[number_of_entities];
+        Pair<Integer, Integer> costs[];
         for (int i = 0; i < number_of_entities; i++){
             System.out.println();
+            
+            //Find best possible next_hop (forward_next_hop)
 
+            //Determine cost to destination
         }
         if (debug);
 
