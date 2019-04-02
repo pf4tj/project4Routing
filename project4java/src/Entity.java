@@ -49,11 +49,6 @@ public class Entity {
         this.number_of_entities = number_of_entities;
         this.distances = new int[number_of_entities];
         this.entityMatrix = new int[number_of_entities][number_of_entities];
-        this.entityMap = new HashMap<>(number_of_entities);
-        this.entityMap2 = new LinkedHashMap<Integer,Integer>(number_of_entities);
-        for (int i = 0; i < number_of_entities; i++){
-            entityMap.put(i,9999);
-        }
         for (int i = 0; i < number_of_entities; i++) {
             if (i==(index-1)){
                 distances[index-1] = 0;
