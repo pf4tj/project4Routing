@@ -156,17 +156,24 @@ public class Entity {
             System.out.print(incomingCostArr[i] + " , ");
         }
         System.out.println();
+        int cheapest = maxVal;
         for (int dest = 0; dest < number_of_entities; dest++) {
-            int cheapest = incomingCostArr[dest];
+
+            if(incomingCostArr[dest] != maxVal)
+              cheapest = incomingCostArr[dest];
+
             int throughNode = dest;
             if ((dest == index) || (incomingCostArr[dest]==0)) continue;
 //            System.out.printf("cheapest = %d \n", cheapest);
 //            System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n",index,cheapest,dest,throughNode);
             for (int src = 0; src < costs.length; src++){
+
                 if (src == index || incomingCostArr[src] == maxVal || incomingCostArr[src]==0){
                     continue;
                 }
                 int costThrough = incomingCostArr[src] + nodeTable[src][dest];
+                if (costs[src] < cheapest)
+                    cheapest = costs[src];
                 if (costThrough < cheapest){
                     cheapest = costThrough;
                     throughNode = src;
