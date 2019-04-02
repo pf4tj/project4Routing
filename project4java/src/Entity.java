@@ -64,7 +64,7 @@ public class Entity {
         if (debugConstructor) {
             System.out.println("-------------------------------------------------------");
             System.out.println("ENTITY CONSTRUCTOR");
-            System.out.printf("Initialized distancesVector for entity id = %d out of %d \n", index, number_of_entities);
+            System.out.printf("Initialized distancesVector for entity id = %d out of %d \n", index, number_of_entities-1);
             for (int i = 0; i < number_of_entities; ++i){
                 System.out.print(distancesArr[i] + "\t");
             }
@@ -124,7 +124,7 @@ public class Entity {
         }
 
         if (debugInit) {
-            System.out.println("INITIALIZE COSTS");
+            System.out.println("INITIALIZE COSTS for Entity " + this.index);
             for (int i = 0; i < numPackets; i++) {
                 System.out.println("printing out neighbour costs : entity idx = " + neighbor_costs[i].x + " cost = " +  neighbor_costs[i].y);
             }
@@ -166,10 +166,11 @@ public class Entity {
         int numPackets = packet.get_costs().length;
         int[] incomingCostArr = packet.get_costs();
         System.out.println("------------");
-        System.out.println("incoming cost array");
+        System.out.println("incoming cost array for entity " + this.index);
         for (int i = 0; i < numPackets; i++){
             System.out.print(incomingCostArr[i] + " , ");
         }
+        System.out.println();
         System.out.println("------------");
         int[] destArr = new int [number_of_entities];
         Packet[] packetArr = new Packet[numPackets];
@@ -177,13 +178,13 @@ public class Entity {
             int cheapest = distancesArr[dest];
             int throughNode = dest;
             for (int src = 0; src < distancesArr.length; src++){
-                if (src == index || distancesArr[src] == maxVal) continue;
+                if (src == this.index || distancesArr[src] == maxVal) continue;
                 int costThrough = distancesArr[src] + entityMatrix[src][dest];
                 if (costThrough < cheapest){
                     cheapest = costThrough;
                     throughNode = src;
                 }
-                System.out.println("distancesArr[" + dest + "] = " + distancesArr[dest] + ", src = " + src);
+                //System.out.println("distancesArr[" + src + "] = " + distancesArr[src] + ", destination = " + dest);
             }
 
             if (cheapest != entityMatrix[index][dest]){
@@ -221,6 +222,7 @@ public class Entity {
             for (int i = 0; i < numPackets; i ++){
                 System.out.print(distancesArr[i] + "\t");
             }
+            System.out.println();
         }
         return packetArr;
     }
@@ -236,7 +238,12 @@ public class Entity {
     public Pair<Integer, Integer>[] get_all_costs() {
 //        implement main vector here pierce
         Pair<Integer, Integer> costs[];
-        for (int i = 0; i < number_of_entities; i++){
+        int next_hop;
+        for (int dest = 0; i < number_of_entities; dest++){
+          for(int src = 0; src < distancesArr.length; src++) {
+            if(src == this.index || src == dest) continue;
+            if()
+          }
             System.out.println();
 
             //Find best possible next_hop (forward_next_hop)
@@ -256,7 +263,7 @@ public class Entity {
     // Return Value: The index of the best neighboring entity to use as the
     // next hop.
     public int forward_next_hop(int destination) {
-        
+
         if (debugForward);
         return 1;
     }
