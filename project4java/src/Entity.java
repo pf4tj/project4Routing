@@ -96,7 +96,7 @@ public class Entity {
         }
         for (int i = 0; i < costs.length; i++){
             this.nodeTable[index][i] = costs[i];
-            if (costs[i]!=maxVal) bestNextMap.put(i,costs[i]);
+            bestNextMap.put(i,costs[i]);
         }
         for (int i = 0; i < numPackets; i++) {
             Packet p = new Packet(neighbor_costs[i].x, costs);
@@ -142,30 +142,38 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] update(Packet packet) {
+        System.out.println("UPDATE PACKETS");
+        System.out.printf("INDEX = %d \n", index);
         boolean update = false;
         int numPackets = packet.get_costs().length;
+        Packet[] packetArr = new Packet[numPackets];
+        System.out.printf("costs array length = %d \n", numPackets);
         int[] incomingCostArr = packet.get_costs();
-        System.out.println("------------");
-        System.out.println("incoming cost array");
+        System.out.print("Incoming cost array : ");
         for (int i = 0; i < numPackets; i++){
             System.out.print(incomingCostArr[i] + " , ");
         }
-        System.out.println("------------");
-        int[] destArr = new int [number_of_entities];
-        Packet[] packetArr = new Packet[numPackets];
+        System.out.println();
         for (int dest = 0; dest < number_of_entities; dest++) {
-            int cheapest = costs[dest];
+            int cheapest = incomingCostArr[dest];
             int throughNode = dest;
+            if (dest == index) continue;
+            System.out.printf("cheapest = %d \n", cheapest);
+//            System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n",index,cheapest,dest,throughNode);
             for (int src = 0; src < costs.length; src++){
-                if (src == index || costs[src] == maxVal) continue;
-                int costThrough = costs[src] + nodeTable[src][dest];
+                if (src == index || incomingCostArr[src] == maxVal || incomingCostArr[src]==0){
+                    continue;
+                }
+                int costThrough = incomingCostArr[src] + nodeTable[src][dest];
                 if (costThrough < cheapest){
                     cheapest = costThrough;
                     throughNode = src;
                 }
             }
-
+//            System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
             if (cheapest != nodeTable[index][dest]){
+//                nodeTable[index][index] = 0;
+                System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
                 nodeTable[index][dest] = cheapest;
                 bestNextMap.put(dest,throughNode);
                 update = true;
@@ -180,15 +188,19 @@ public class Entity {
 ////                System.out.print(incomingCostArr[src] + " , ");
 //            }
         }
-
         for (int i = 0; i < numPackets; i++) {
-            Packet p = new Packet(destArr[i], costs);
+            Packet p = new Packet(i, costs);
             p.set_source(this.index);
             packetArr[i] = p;
         }
 
         if (debugUpdate) {
             System.out.println("UPDATE PACKETS");
+            System.out.println("incoming cost array");
+            for (int i = 0; i < numPackets; i++){
+                System.out.print(incomingCostArr[i] + " , ");
+            }
+            System.out.println();
             System.out.printf("Updated entityMatrix when calling update costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
@@ -202,7 +214,12 @@ public class Entity {
             for (int i = 0; i < numPackets; i ++){
                 System.out.print(costs[i] + "\t");
             }
+            System.out.println();
+            System.out.print("printing out next best hash map : ");
+            System.out.println(bestNextMap);
+            System.out.println("-------------------------------------------------------");
         }
+
         return packetArr;
     }
     // This function is used by the simulator to retrieve the calculated routes
