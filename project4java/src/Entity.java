@@ -135,6 +135,7 @@ public class Entity {
             }
 
         }
+        System.out.println();
         return packetArr;
     }
 
@@ -160,6 +161,7 @@ public class Entity {
                          distancesArr[dest] = distancesArr[src] + this.entityMatrix[src][dest];
                      }
                 }
+                System.out.println("distancesArr[" + dest + "] = " + distancesArr[dest] + ", src = " + src);
             }
         }
 
@@ -195,7 +197,7 @@ public class Entity {
         Pair<Integer, Integer> costs[];
         for (int i = 0; i < number_of_entities; i++){
             System.out.println();
-            
+
             //Find best possible next_hop (forward_next_hop)
 
             //Determine cost to destination
@@ -213,7 +215,7 @@ public class Entity {
     // Return Value: The index of the best neighboring entity to use as the
     // next hop.
     public int forward_next_hop(int destination) {
-
+        
         if (debugForward);
         return 1;
     }
