@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -26,18 +25,16 @@ import java.lang.Math;
 public class Entity {
     int index;
     int number_of_entities;
-    int greatestneighborsize;
-    int distancesArr[];
-    int[][] entityMatrix;
+    int costs[];
+    int[][] nodeTable;
     HashMap<Integer, Integer> bestNextMap;
     public static final int maxVal = 999;
     public boolean debug = true;
-    public boolean debugConstructor = true && debug;
+    public boolean debugConstructor = false && debug;
     public boolean debugInit = true && debug;
     public boolean debugUpdate = true && debug;
     public boolean debugCosts = false && debug;
     public boolean debugForward = false & debug;
-
 
     // This initialization function will be called at the beginning of the
     // simulation to setup all entities.
@@ -50,15 +47,15 @@ public class Entity {
     public Entity(int entity_index, int number_of_entities) {
         this.index = entity_index;
         this.number_of_entities = number_of_entities;
-        this.distancesArr = new int[number_of_entities];
-        this.entityMatrix = new int[number_of_entities][number_of_entities];
+        this.costs = new int[number_of_entities];
+        this.nodeTable = new int[number_of_entities][number_of_entities];
         this.bestNextMap = new HashMap<Integer,Integer>(number_of_entities);
-        for (int i = 0; i < number_of_entities; i++) {
-            if (i==(index)) distancesArr[index] = 0;
-            else distancesArr[i] = maxVal;
-            for (int j = 0; j < number_of_entities; j++) {
-                if (i == j) entityMatrix[i][j] = 0;
-                else entityMatrix[i][j] = maxVal;
+        for (int src = 0; src < number_of_entities; src++) {
+            if (src==index) costs[index] = 0;
+            else costs[src] = maxVal;
+            for (int dest = 0; dest < number_of_entities; dest++) {
+                if (src == dest) nodeTable[src][dest] = 0;
+                else nodeTable[src][dest] = maxVal;
             }
         }
         if (debugConstructor) {
@@ -66,13 +63,13 @@ public class Entity {
             System.out.println("ENTITY CONSTRUCTOR");
             System.out.printf("Initialized distancesVector for entity id = %d out of %d \n", index, number_of_entities);
             for (int i = 0; i < number_of_entities; ++i){
-                System.out.print(distancesArr[i] + "\t");
+                System.out.print(costs[i] + "\t");
             }
             System.out.println();
             System.out.printf("Initialized entityMatrix for entity id = %d \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
-                    System.out.print(entityMatrix[i][j] + "\t");
+                    System.out.print(nodeTable[i][j] + "\t");
                 }
                 System.out.println();
             }
@@ -93,36 +90,19 @@ public class Entity {
     public Packet[] initialize_costs(Pair<Integer, Integer> neighbor_costs[]) {
         int numPackets = neighbor_costs.length;
         Packet[] packetArr = new Packet[numPackets];
-
         for (int i = 0; i < numPackets; i++) {
             if (index == neighbor_costs[i].x) continue;
-            if ((neighbor_costs[i].y) != this.maxVal) {
-                this.distancesArr[neighbor_costs[i].x] = (neighbor_costs[i].y);
-            }
+            if ((neighbor_costs[i].y) != this.maxVal) this.costs[neighbor_costs[i].x] = (neighbor_costs[i].y);
         }
-        for (int i = 0; i < distancesArr.length; i++){
-            this.entityMatrix[index][i] = distancesArr[i];
+        for (int i = 0; i < costs.length; i++){
+            this.nodeTable[index][i] = costs[i];
+            if (costs[i]!=maxVal) bestNextMap.put(i,costs[i]);
         }
-//        if ((neighbor_costs[i].y) != this.maxVal) {
-//             = (neighbor_costs[i].y);
-//        }
-//        for(int i = 1; i <= number_of_entities-1; i++) {
-//            for(int source = 0; source < number_of_entities; source++) {
-//                for(int dest = 0; dest < number_of_entities; dest++) {
-//                    if(entityMatrix[source][dest] != maxVal) {
-//                        if(distancesArr[dest] > distancesArr[source] + entityMatrix[source][dest]) {
-//                            distancesArr[dest] = distancesArr[source] + entityMatrix[source][dest];
-//                        }
-//                    }
-//                }
-//            }
-//        }
         for (int i = 0; i < numPackets; i++) {
-            Packet p = new Packet(neighbor_costs[i].x, distancesArr);
+            Packet p = new Packet(neighbor_costs[i].x, costs);
             p.set_source(this.index);
             packetArr[i] = p;
         }
-
         if (debugInit) {
             System.out.println("INITIALIZE COSTS");
             for (int i = 0; i < numPackets; i++) {
@@ -131,16 +111,18 @@ public class Entity {
 
             System.out.printf("Printing out distancesArr values \n", index);
             for (int i = 0; i < number_of_entities; i++){
-                System.out.print(distancesArr[i] + " , ");
+                System.out.print(costs[i] + " , ");
             }
             System.out.println();
             System.out.printf("Updated entityMatrix when calling initialize costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
-                    System.out.print(entityMatrix[i][j] + "\t");
+                    System.out.print(nodeTable[i][j] + "\t");
                 }
                 System.out.println();
             }
+            System.out.print("printing out next best hash map : ");
+            System.out.println(bestNextMap);
 
             System.out.println("printing out packets to send");
             for (int i = 0; i < numPackets; i++) {
@@ -159,7 +141,6 @@ public class Entity {
     //
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
-
     public Packet[] update(Packet packet) {
         boolean update = false;
         int numPackets = packet.get_costs().length;
@@ -173,19 +154,21 @@ public class Entity {
         int[] destArr = new int [number_of_entities];
         Packet[] packetArr = new Packet[numPackets];
         for (int dest = 0; dest < number_of_entities; dest++) {
-            int cheapest = distancesArr[dest];
+            int cheapest = costs[dest];
             int throughNode = dest;
-            for (int src = 0; src < distancesArr.length; src++){
-                if (src == index || distancesArr[src] == maxVal) continue;
-                int costThrough = distancesArr[src] + entityMatrix[src][dest];
+            for (int src = 0; src < costs.length; src++){
+                if (src == index || costs[src] == maxVal) continue;
+                int costThrough = costs[src] + nodeTable[src][dest];
                 if (costThrough < cheapest){
                     cheapest = costThrough;
                     throughNode = src;
                 }
             }
 
-            if (cheapest != entityMatrix[index][dest]){
-                entityMatrix[index][dest] = cheapest;
+            if (cheapest != nodeTable[index][dest]){
+                nodeTable[index][dest] = cheapest;
+                bestNextMap.put(dest,throughNode);
+                update = true;
             }
 //            for (int src = 0; src < numPackets; src++) {
 //                for (int dest = 0; dest < numPackets; dest++) {
@@ -199,7 +182,7 @@ public class Entity {
         }
 
         for (int i = 0; i < numPackets; i++) {
-            Packet p = new Packet(destArr[i], distancesArr);
+            Packet p = new Packet(destArr[i], costs);
             p.set_source(this.index);
             packetArr[i] = p;
         }
@@ -209,7 +192,7 @@ public class Entity {
             System.out.printf("Updated entityMatrix when calling update costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
-                    System.out.print(entityMatrix[i][j] + "\t");
+                    System.out.print(nodeTable[i][j] + "\t");
                 }
                 System.out.println();
             }
@@ -217,7 +200,7 @@ public class Entity {
             System.out.println();
             System.out.println("updated distances Arr");
             for (int i = 0; i < numPackets; i ++){
-                System.out.print(distancesArr[i] + "\t");
+                System.out.print(costs[i] + "\t");
             }
         }
         return packetArr;
