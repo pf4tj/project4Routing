@@ -31,8 +31,8 @@ public class Entity {
     public static final int maxVal = 999;
     public boolean debug = true;
     public boolean debugConstructor = false && debug;
-    public boolean debugInit = true && debug;
-    public boolean debugUpdate = true && debug;
+    public boolean debugInit = false&& debug;
+    public boolean debugUpdate = false && debug;
     public boolean debugCosts = false && debug;
     public boolean debugForward = false & debug;
 
@@ -96,7 +96,7 @@ public class Entity {
         }
         for (int i = 0; i < costs.length; i++){
             this.nodeTable[index][i] = costs[i];
-            bestNextMap.put(i,costs[i]);
+            bestNextMap.put(i,i);
         }
         for (int i = 0; i < numPackets; i++) {
             Packet p = new Packet(neighbor_costs[i].x, costs);
@@ -143,13 +143,13 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] update(Packet packet) {
-        System.out.println("-------------------------------------------------------");
-        System.out.println("UPDATE PACKETS");
-        System.out.printf("INDEX = %d \n", index);
+//        System.out.println("-------------------------------------------------------");
+//        System.out.println("UPDATE PACKETS");
+//        System.out.printf("INDEX = %d \n", index);
         boolean update = false;
         int numPackets = packet.get_costs().length;
         Packet[] packetArr = new Packet[numPackets];
-        System.out.printf("costs array length = %d \n", numPackets);
+//        System.out.printf("costs array length = %d \n", numPackets);
         int[] incomingCostArr = packet.get_costs();
         System.out.print("Incoming cost array : ");
         for (int i = 0; i < numPackets; i++){
@@ -163,7 +163,6 @@ public class Entity {
               cheapest = incomingCostArr[dest];
 
             int throughNode = dest;
-            if ((dest == index) || (incomingCostArr[dest]==0)) continue;
 //            System.out.printf("cheapest = %d \n", cheapest);
 //            System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n",index,cheapest,dest,throughNode);
             for (int src = 0; src < costs.length; src++){
@@ -185,6 +184,7 @@ public class Entity {
 //                nodeTable[index][index] = 0;
                 System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
                 nodeTable[index][dest] = cheapest;
+//                System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
                 bestNextMap.put(dest,throughNode);
                 update = true;
             }
@@ -207,6 +207,7 @@ public class Entity {
         if (debugUpdate) {
             System.out.println("-------------------------------------------------------");
             System.out.println("UPDATE PACKETS");
+            System.out.printf("INDEX = %d \n ", index);
             System.out.println("incoming cost array");
             for (int i = 0; i < numPackets; i++){
                 System.out.print(incomingCostArr[i] + " , ");
@@ -220,11 +221,11 @@ public class Entity {
                 System.out.println();
             }
 
-            System.out.println();
-            System.out.println("updated distances Arr");
-            for (int i = 0; i < numPackets; i ++){
-                System.out.print(costs[i] + "\t");
-            }
+//            System.out.println();
+//            System.out.println("updated distances Arr");
+//            for (int i = 0; i < numPackets; i ++){
+//                System.out.print(costs[i] + "\t");
+//            }
             System.out.println();
             System.out.print("printing out next best hash map : ");
             System.out.println(bestNextMap);
@@ -272,8 +273,6 @@ public class Entity {
     // Return Value: The index of the best neighboring entity to use as the
     // next hop.
     public int forward_next_hop(int destination) {
-
-        if (debugForward);
-        return 1;
+        return bestNextMap.get(destination);
     }
 }
