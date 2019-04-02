@@ -93,10 +93,10 @@ public class Entity {
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
             if (i == (index-1)) continue;
-            if ((neighbor_costs[i].y) < 999) {
+            if ((neighbor_costs[i].y) != this.maxVal) {
                 this.entityMatrix[index - 1][i] = (neighbor_costs[i].y);
             }
-            if ((neighbor_costs[i].y) < 999) {
+            if ((neighbor_costs[i].y) != this.maxVal) {
                 this.distancesArr[i] = (neighbor_costs[i].y);
             }
 
@@ -148,7 +148,7 @@ public class Entity {
 
     public Packet[] update(Packet packet) {
         int numPackets = packet.get_costs().length;
-        int[] costArr = new int[numPackets];
+        int[] incomingCostArr = packet.get_costs();
         int[] destArr = new int [number_of_entities];
         Packet[] packetArr = new Packet[numPackets];
         for (int src = 0; src < numPackets; src++) {
@@ -156,8 +156,8 @@ public class Entity {
             for (int dest = 0; dest < numPackets; dest++) {
                 if (src == dest) continue;
                 else if (this.entityMatrix[src][dest] != this.maxVal){
-                     if (distancesArr[dest] > (distancesArr[src] + this.entityMatrix[src][dest])){
-                         distancesArr[dest] = distancesArr[src] + this.entityMatrix[src][dest];
+                     if (distancesArr[dest] > (incomingCostArr[src] + this.entityMatrix[src][dest])){
+                         distancesArr[dest] = incomingCostArr[src] + this.entityMatrix[src][dest];
                      }
                 }
             }
@@ -177,6 +177,12 @@ public class Entity {
                     System.out.print(entityMatrix[i][j] + "\t");
                 }
                 System.out.println();
+            }
+
+            System.out.println();
+            System.out.println("updated distances Arr");
+            for (int i = 0; i < numPackets; i ++){
+                System.out.print(distancesArr[i] + "\t");
             }
         }
         return packetArr;
