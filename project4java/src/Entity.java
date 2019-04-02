@@ -32,6 +32,9 @@ public class Entity {
     public  boolean debugConstructor = false;
     public boolean debugInit = true;
     public boolean debugUpdate = true;
+    public boolean debugCosts = false;
+    public boolean debugForward = false;
+
 
     // This initialization function will be called at the beginning of the
     // simulation to setup all entities.
@@ -90,14 +93,16 @@ public class Entity {
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
             if (i == (index-1)) continue;
-            if ((neighbor_costs[i].y) != entityMatrix[index - 1][i]) {
+            if ((neighbor_costs[i].y) < 999) {
                 this.entityMatrix[index - 1][i] = (neighbor_costs[i].y);
             }
-            if ((neighbor_costs[i].y) != distancesArr[index - 1]) {
-                this.distancesArr[index - 1] = (neighbor_costs[i].y);
+            if ((neighbor_costs[i].y) < 999) {
+                this.distancesArr[i] = (neighbor_costs[i].y);
             }
+
             costArr[i] = neighbor_costs[i].y;
         }
+
         for (int i = 0; i < numPackets; i++) {
             Packet p = new Packet(neighbor_costs[i].x, costArr);
             p.set_source(this.index);
@@ -121,7 +126,7 @@ public class Entity {
             System.out.println();
             System.out.printf("Printing out costArr values \n", index);
             for (int i = 0; i < number_of_entities; i++){
-                System.out.print(costArr[i] + " , ");
+                System.out.print(distancesArr[i] + " , ");
             }
             System.out.println();
             System.out.println("printing out packets to send");
@@ -195,7 +200,7 @@ public class Entity {
 
             //Determine cost to destination
         }
-        if (debug);
+        if (debugCosts);
 
         return null;
     }
@@ -209,7 +214,7 @@ public class Entity {
     // next hop.
     public int forward_next_hop(int destination) {
 
-        if (debug);
+        if (debugForward);
         return 1;
     }
 }

@@ -4,7 +4,7 @@ public class Main {
     public static void main(String[] args) {
 //        Pair<Integer,Integer> test = new Pair (1,1);
 //        System.out.println(test);
-        Entity e = new Entity(1,3);
+        Entity e = new Entity(2,3);
 
         Pair<Integer, Integer>[][] network1 = new Pair[4][];
         network1[0] = new Pair[] {new Pair(1, 1), new Pair(2, 1), new Pair(3, 4)};
