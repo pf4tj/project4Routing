@@ -14,7 +14,6 @@ public class Main {
 //        System.out.println(network1[0][0]);
 
         Packet p0[] = e.initialize_costs(network1[0]);
-        Packet p1[] = e.initialize_costs(network1[1]);
 //        Packet p1[] = e1.initialize_costs(network1[1]);
 //        e.update(p1[2]);
 //      e.update()

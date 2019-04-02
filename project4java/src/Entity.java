@@ -31,12 +31,11 @@ public class Entity {
     int[][] entityMatrix;
     public static final int maxVal = 999;
     public boolean debug = true;
-    public  boolean debugConstructor = true;
-    public boolean debugInit = true;
-    public boolean debugUpdate = true
-            ;
-    public boolean debugCosts = false;
-    public boolean debugForward = false;
+    public boolean debugConstructor = true && debug;
+    public boolean debugInit = true && debug;
+    public boolean debugUpdate = true && debug;
+    public boolean debugCosts = false && debug;
+    public boolean debugForward = false & debug;
 
 
     // This initialization function will be called at the beginning of the
@@ -61,9 +60,9 @@ public class Entity {
             }
         }
         if (debugConstructor) {
-            System.out.println("Entity DEBUG SET TO TRUE");
-
-            System.out.printf("Initialized distancesVector for entity id = %d \n", index);
+            System.out.println("-------------------------------------------------------");
+            System.out.println("ENTITY CONSTRUCTOR");
+            System.out.printf("Initialized distancesVector for entity id = %d out of %d \n", index, number_of_entities);
             for (int i = 0; i < number_of_entities; ++i){
                 System.out.print(distancesArr[i] + "\t");
             }
@@ -75,6 +74,7 @@ public class Entity {
                 }
                 System.out.println();
             }
+            System.out.println("-------------------------------------------------------");
         }
 
     }
@@ -93,42 +93,44 @@ public class Entity {
         int[] costArr = new int[numPackets];
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
-            if (i == (index)) continue;
+            if (index == neighbor_costs[i].x) continue;
             if ((neighbor_costs[i].y) != this.maxVal) {
-                this.entityMatrix[index][i] = (neighbor_costs[i].y);
-            }
-            if ((neighbor_costs[i].y) != this.maxVal) {
-                this.distancesArr[i] = (neighbor_costs[i].y);
-            }
-
-            costArr[i] = neighbor_costs[i].y;
-        }
-        for(int i = 1; i <= number_of_entities-1; i++) {
-            for(int source = 0; source < number_of_entities; source++) {
-                for(int dest = 0; dest < number_of_entities; dest++) {
-                    if(entityMatrix[source][dest] != maxVal) {
-                        if(distancesArr[dest] > distancesArr[source] + entityMatrix[source][dest]) {
-                            distancesArr[dest] = distancesArr[source] + entityMatrix[source][dest];
-                        }
-                    }
-                }
+                this.distancesArr[neighbor_costs[i].x] = (neighbor_costs[i].y);
             }
         }
-
-
-
+        for (int i = 0; i <= costArr.length; i++){
+            this.entityMatrix[index][i] = distancesArr[i];
+        }
+//        if ((neighbor_costs[i].y) != this.maxVal) {
+//             = (neighbor_costs[i].y);
+//        }
+//        for(int i = 1; i <= number_of_entities-1; i++) {
+//            for(int source = 0; source < number_of_entities; source++) {
+//                for(int dest = 0; dest < number_of_entities; dest++) {
+//                    if(entityMatrix[source][dest] != maxVal) {
+//                        if(distancesArr[dest] > distancesArr[source] + entityMatrix[source][dest]) {
+//                            distancesArr[dest] = distancesArr[source] + entityMatrix[source][dest];
+//                        }
+//                    }
+//                }
+//            }
+//        }
         for (int i = 0; i < numPackets; i++) {
-            Packet p = new Packet(neighbor_costs[i].x, costArr);
+            Packet p = new Packet(neighbor_costs[i].x, distancesArr);
             p.set_source(this.index);
             packetArr[i] = p;
         }
 
         if (debugInit) {
-            System.out.println();
+            System.out.println("INITIALIZE COSTS");
             for (int i = 0; i < numPackets; i++) {
                 System.out.println("printing out neighbour costs : entity idx = " + neighbor_costs[i].x + " cost = " +  neighbor_costs[i].y);
             }
-            System.out.println();
+
+            System.out.printf("Printing out distancesArr values \n", index);
+            for (int i = 0; i < number_of_entities; i++){
+                System.out.print(distancesArr[i] + " , ");
+            }
             System.out.println();
             System.out.printf("Updated entityMatrix when calling initialize costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
@@ -137,17 +139,13 @@ public class Entity {
                 }
                 System.out.println();
             }
-            System.out.println();
-            System.out.printf("Printing out costArr values \n", index);
-            for (int i = 0; i < number_of_entities; i++){
-                System.out.print(distancesArr[i] + " , ");
-            }
-            System.out.println();
+
             System.out.println("printing out packets to send");
             for (int i = 0; i < numPackets; i++) {
                 System.out.print(packetArr[i] + " , ");
             }
-
+            System.out.println();
+            System.out.println("-------------------------------------------------------");
         }
         return packetArr;
     }
@@ -190,7 +188,7 @@ public class Entity {
         }
 
         if (debugUpdate) {
-            System.out.println();
+            System.out.println("UPDATE PACKETS");
             System.out.printf("Updated entityMatrix when calling update costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
