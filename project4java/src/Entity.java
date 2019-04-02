@@ -27,10 +27,11 @@ public class Entity {
     int number_of_entities;
     private int distances[];
     public static final int maxVal = 999;
-    private boolean debug = true;
+    private boolean debugConstructor = true;
+    private boolean debugInit = false;
+    private boolean debugUpdate = false;
     int[][] entityMatrix;
-    Map<Integer, Integer> entityMap;
-    LinkedHashMap<Integer,Integer> entityMap2;
+
     int[] distancevector;
     Vector<Vector<Integer>> networkVec = new Vector<Vector<Integer>>();
     int[] costVec;
@@ -85,7 +86,7 @@ public class Entity {
 //        }
 //        System.out.println();
 //        System.out.println();
-        if (debug) {
+        if (debugConstructor) {
             System.out.println("Entity DEBUG SET TO TRUE");
 
             System.out.printf("Initialized distancesVector for entity id = %d \n", index);
@@ -158,7 +159,7 @@ public class Entity {
             packetArr[i] = p;
         }
 
-        if (debug) {
+        if (debugInit) {
             System.out.println();
             for (int i = 0; i < numPackets; i++) {
                 System.out.println("printing out neighbour costs : entity idx = " + neighbor_costs[i].x + " cost = " +  neighbor_costs[i].y);
@@ -211,7 +212,7 @@ public class Entity {
             }
         }
 
-        if (debug) {
+        if (debugUpdate) {
             System.out.println();
             System.out.printf("Updated entityMatrix when calling update costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
@@ -237,7 +238,7 @@ public class Entity {
         for (int i = 0; i < number_of_entities; i++){
             System.out.println();
         }
-        if (debug);
+//        if (debug);
 
         return null;
     }
@@ -251,7 +252,7 @@ public class Entity {
     // next hop.
     public int forward_next_hop(int destination) {
 
-        if (debug);
+//        if (debug);
         return 1;
     }
 }
