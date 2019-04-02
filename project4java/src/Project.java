@@ -85,7 +85,7 @@ public class Project {
 
 
         NetworkSimulator simulator;
-        simulator = new NetworkSimulator(network4, 500, 3);
+        simulator = new NetworkSimulator(network1, 500, 3);
 
         simulator.run();
         simulator.display_forwarding_table(0);
