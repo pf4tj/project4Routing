@@ -31,8 +31,8 @@ public class Entity {
     public static final int maxVal = 999;
     public boolean debug = true;
     public boolean debugConstructor = false && debug;
-    public boolean debugInit = false&& debug;
-    public boolean debugUpdate = false && debug;
+    public boolean debugInit = false && debug;
+    public boolean debugUpdate = true && debug;
     public boolean debugCosts = false && debug;
     public boolean debugForward = false & debug;
 
@@ -62,14 +62,12 @@ public class Entity {
             System.out.println("-------------------------------------------------------");
             System.out.println("ENTITY CONSTRUCTOR");
             System.out.printf("Initialized distancesVector for entity id = %d out of %d \n", index, number_of_entities-1);
-            for (int i = 0; i < number_of_entities; ++i){
-                System.out.print(costs[i] + "\t");
-            }
+            for (int i = 0; i < number_of_entities; ++i) System.out.print(costs[i] + "\t");
             System.out.println();
             System.out.printf("Initialized nodeTable for entity id = %d \n", index);
-            for (int i = 0; i < number_of_entities; i++) {
-                for (int j = 0; j < number_of_entities; j++) {
-                    System.out.print(nodeTable[i][j] + "\t");
+            for (int src = 0; src < number_of_entities; src++) {
+                for (int dest = 0; dest < number_of_entities; dest++) {
+                    System.out.print(nodeTable[src][dest] + "\t");
                 }
                 System.out.println();
             }
@@ -99,6 +97,7 @@ public class Entity {
             bestNextMap.put(i,i);
         }
         for (int i = 0; i < numPackets; i++) {
+            if (neighbor_costs[i].x == this.index) continue;
             Packet p = new Packet(neighbor_costs[i].x, costs);
             p.set_source(this.index);
             packetArr[i] = p;
@@ -152,42 +151,42 @@ public class Entity {
 //        System.out.printf("costs array length = %d \n", numPackets);
         int[] incomingCostArr = packet.get_costs();
         System.out.print("Incoming cost array : ");
-        for (int i = 0; i < numPackets; i++){
+        for (int i = 0; i < numPackets; i++) {
             System.out.print(incomingCostArr[i] + " , ");
         }
         System.out.println();
         int cheapest = maxVal;
         for (int dest = 0; dest < number_of_entities; dest++) {
-
-            if(incomingCostArr[dest] != maxVal)
-              cheapest = incomingCostArr[dest];
-
+            if (incomingCostArr[dest] != maxVal) {
+                cheapest = incomingCostArr[dest];
+            }
             int throughNode = dest;
-//            System.out.printf("cheapest = %d \n", cheapest);
-//            System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n",index,cheapest,dest,throughNode);
-            for (int src = 0; src < costs.length; src++){
+            System.out.printf("cheapest = %d \n", cheapest);
+            System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n", index, cheapest, dest, throughNode);
+            for (int src = 0; src < costs.length; src++) {
 
-                if (src == index || incomingCostArr[src] == maxVal || incomingCostArr[src]==0){
+                if (src == index || incomingCostArr[src] == maxVal || incomingCostArr[src] == 0) {
                     continue;
                 }
                 int costThrough = incomingCostArr[src] + nodeTable[src][dest];
-                if (costs[src] < cheapest)
-                    cheapest = costs[src];
-                if (costThrough < cheapest){
+//                if (costs[src] < cheapest)
+//                    cheapest = costs[src];
+                if (costThrough < cheapest) {
                     cheapest = costThrough;
                     throughNode = src;
                 }
                 //System.out.println("distancesArr[" + src + "] = " + distancesArr[src] + ", destination = " + dest);
             }
 //            System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
-            if (cheapest != nodeTable[index][dest]){
+            if (cheapest != nodeTable[index][dest]) {
 //                nodeTable[index][index] = 0;
                 System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
                 nodeTable[index][dest] = cheapest;
 //                System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
-                bestNextMap.put(dest,throughNode);
+                bestNextMap.put(dest, throughNode);
                 update = true;
             }
+
 //            for (int src = 0; src < numPackets; src++) {
 //                for (int dest = 0; dest < numPackets; dest++) {
 //                    if (src == dest) continue;
@@ -198,8 +197,12 @@ public class Entity {
 ////                System.out.print(incomingCostArr[src] + " , ");
 //            }
         }
+        for (int i = 0; i < costs.length; i++) {
+            costs[i] = this.nodeTable[index][i];
+        }
         for (int i = 0; i < numPackets; i++) {
-            Packet p = new Packet(i, costs);
+            if (i == this.index) continue;
+            Packet p = new Packet(i, this.costs);
             p.set_source(this.index);
             packetArr[i] = p;
         }
