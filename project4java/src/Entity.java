@@ -167,7 +167,7 @@ public class Entity {
         System.out.println();
         int cheapest = maxVal;
         for (int dest = 0; dest < costs.length; dest++) {
-//            if(dest == index || dest == packet.get_source()) continue;
+            if(dest == index || dest == packet.get_source()) continue;
             if(incomingCostArr[dest] < costs[dest])
               cheapest = incomingCostArr[dest];
             else
@@ -261,7 +261,7 @@ public class Entity {
     // second element is to entity index 1, etc.
     public Pair<Integer, Integer>[] get_all_costs() {
 //        implement main vector here pierce
-        Pair<Integer, Integer> costs[];
+        Pair<Integer, Integer> costs[] = new Pair[number_of_entities];
         int next_hop;
         int cost;
         for (int dest = 0; dest < number_of_entities; dest++){
@@ -271,15 +271,14 @@ public class Entity {
             //if()
           }
           */
-            System.out.println();
+            //System.out.println();
 
             //Find best possible next_hop (forward_next_hop)
             next_hop = forward_next_hop(dest);
             //Determine cost to destination
             cost = nodeTable[index][dest];
-
-            costs[dest].x = next_hop;
-            costs[dest].y = cost;
+            Pair<Integer, Integer> forwardPair = new Pair(next_hop, cost);
+            costs[dest] = forwardPair;
         }
         if (debugCosts);
 
