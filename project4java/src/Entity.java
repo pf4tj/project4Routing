@@ -255,6 +255,7 @@ public class Entity {
 //        implement main vector here pierce
         Pair<Integer, Integer> costs[];
         int next_hop;
+        int cost;
         for (int dest = 0; dest < number_of_entities; dest++){
           /*
           for(int src = 0; src < distancesArr.length; src++) {
@@ -265,12 +266,16 @@ public class Entity {
             System.out.println();
 
             //Find best possible next_hop (forward_next_hop)
-
+            next_hop = forward_next_hop(dest);
             //Determine cost to destination
+            cost = nodeTable[index][dest];
+
+            costs[dest].x = next_hop;
+            costs[dest].y = cost;
         }
         if (debugCosts);
 
-        return null;
+        return costs;
     }
 
     // Return the best next hop for a packet with the given destination.
