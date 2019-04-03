@@ -173,6 +173,7 @@ public class Entity {
             nodeTable[index][dest] = costs[dest];
             throughNode = packet.get_source();
             System.out.println("Going through node " + throughNode);
+            bestNextMap.put(dest, throughNode);
           }
         }
 
@@ -256,6 +257,7 @@ public class Entity {
 
         if (debugUpdate) {
             System.out.println("-------------------------------------------------------");
+            /*
             System.out.println("UPDATE PACKETS");
             System.out.printf("INDEX = %d \n ", index);
             System.out.printf("Number of neighbors = %d \n",neighbors.length);
@@ -264,6 +266,7 @@ public class Entity {
                 System.out.print(packet.get_costs()[i] + " , ");
             }
             System.out.println();
+            */
             System.out.printf("Updated entityMatrix when calling update costs on entity id =  %d. \n", index);
             for (int i = 0; i < number_of_entities; i++) {
                 for (int j = 0; j < number_of_entities; j++) {
