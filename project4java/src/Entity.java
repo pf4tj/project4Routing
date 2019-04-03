@@ -27,16 +27,15 @@ public class Entity {
     int index;
     int number_of_entities;
     int costs[];
-    int[][] nodeTable;
     int neighbors[];
+    int[][] nodeTable;
     HashMap<Integer, Integer> bestNextMap;
     public static final int maxVal = 999;
     public boolean debug = true;
     public boolean debugConstructor = false && debug;
-    public boolean debugInit = false && debug;
-    public boolean debugUpdate = false && debug;
+    public boolean debugInit = true && debug;
+    public boolean debugUpdate = true && debug;
     public boolean debugCosts = false && debug;
-    public boolean debugForward = false & debug;
 
     // This initialization function will be called at the beginning of the
     // simulation to setup all entities.
@@ -92,7 +91,7 @@ public class Entity {
         this.neighbors = new int [numPackets];
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
-            if (index == neighbor_costs[i].x) continue;
+            if (this.costs[neighbor_costs[i].x] == i) this.costs = 0;
             if ((neighbor_costs[i].y) != this.maxVal) this.costs[neighbor_costs[i].x] = (neighbor_costs[i].y);
         }
         for (int i = 0; i < costs.length; i++){
@@ -133,10 +132,6 @@ public class Entity {
                 System.out.println(neighbors[i] + ", ");
             }
             System.out.println();
-            for (int i = 0; i < numPackets; i++) {
-                System.out.println(neighbors[i] + ", ");
-            }
-            System.out.println("-------------------------------------------------------");
         }
         System.out.println();
         return packetArr;
@@ -150,14 +145,11 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] update(Packet packet) {
-//        System.out.println("-------------------------------------------------------");
-//        System.out.println("UPDATE PACKETS");
-//        System.out.printf("INDEX = %d \n", index)
         boolean update = false;
         int numPackets = packet.get_costs().length;
-//        int src
-        System.out.printf("number of packets = %d \n", numPackets);
+        int numPackets2 = neighbors.length;
         Packet[] packetArr = new Packet[numPackets];
+        System.out.printf("number of packets = %d \n", numPackets);
 //        System.out.printf("costs array length = %d \n", numPackets);
         int[] incomingCostArr = packet.get_costs();
         System.out.print("Incoming cost array : ");
@@ -167,7 +159,7 @@ public class Entity {
         System.out.println();
         int cheapest = maxVal;
         for (int dest = 0; dest < costs.length; dest++) {
-//            if(dest == index || dest == packet.get_source()) continue;
+            if(dest == index || dest == packet.get_source()) continue;
             if(incomingCostArr[dest] < costs[dest])
               cheapest = incomingCostArr[dest];
             else
@@ -177,22 +169,23 @@ public class Entity {
             System.out.printf("cheapest = %d \n", cheapest);
             System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n", index, cheapest, dest, throughNode);
             for (int src = 0; src < costs.length; src++) {
-
                 if (src == index || incomingCostArr[src] == maxVal || incomingCostArr[src] == 0) {
                     continue;
                 }
                 int costThrough = incomingCostArr[src] + nodeTable[src][dest];
-//                if (costs[src] < cheapest)
-//                    cheapest = costs[src];
+                if (costs[src] < cheapest)
+                    cheapest = costs[src];
+                    throughNode = src;
                 if (costThrough < cheapest) {
                     cheapest = costThrough;
                     throughNode = src;
+                    System.out.printf("throughNode = %d. \n",throughNode);
                 }
                 //System.out.println("distancesArr[" + src + "] = " + distancesArr[src] + ", destination = " + dest);
             }
 //            System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
             if (cheapest != nodeTable[index][dest]) {
-//                nodeTable[index][index] = 0;
+                nodeTable[index][index] = 0;
                 System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
                 nodeTable[index][dest] = cheapest;
 //                System.out.printf("Updated cost for %s -> %s. Prev cost: %s. New cost: %s. Routes via %s\n", index, dest, nodeTable[index][dest], cheapest, throughNode);
@@ -203,8 +196,8 @@ public class Entity {
 //            for (int src = 0; src < numPackets; src++) {
 //                for (int dest = 0; dest < numPackets; dest++) {
 //                    if (src == dest) continue;
-//                    if (distancesArr[dest] > (incomingCostArr[src] + this.entityMatrix[src][dest])) {
-//                        distancesArr[dest] = incomingCostArr[src] + this.entityMatrix[src][dest];
+//                    if (costs[dest] > (incomingCostArr[src] + this.entityMatrix[src][dest])) {
+//                        costs[dest] = incomingCostArr[src] + this.entityMatrix[src][dest];
 //                    }
 //                }
 ////                System.out.print(incomingCostArr[src] + " , ");
@@ -219,11 +212,13 @@ public class Entity {
             p.set_source(this.index);
             packetArr[i] = p;
         }
+//        s
 
         if (debugUpdate) {
             System.out.println("-------------------------------------------------------");
             System.out.println("UPDATE PACKETS");
             System.out.printf("INDEX = %d \n ", index);
+            System.out.printf("Number of neighbors = %d \n",numPackets2);
             System.out.println("incoming cost array");
             for (int i = 0; i < numPackets; i++){
                 System.out.print(incomingCostArr[i] + " , ");
