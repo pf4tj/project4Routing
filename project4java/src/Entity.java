@@ -34,7 +34,7 @@ public class Entity {
     public boolean debug = true;
     public boolean debugConstructor = false && debug;
     public boolean debugInit = false && debug;
-    public boolean debugUpdate = false && debug;
+    public boolean debugUpdate = true && debug;
     public boolean debugCosts = false && debug;
 
     // This initialization function will be called at the beginning of the
@@ -150,19 +150,29 @@ public class Entity {
         int newCost = maxVal;
         int calculatedCosts[] = new int[costs.length];
         Packet[] packetArr = new Packet[neighbors.length];
+        int throughNode = this.index;
+        System.out.println("Initial Cost Array for index = " + this.index);
+        System.out.print("[ ");
+        for(int i = 0; i < costs.length; i++) {
+          System.out.print(costs[i] + " ");
+        }
+        System.out.println("]");
         for(int dest = 0; dest < costs.length; dest++) {
-          //System.out.println("costs[" + dest + "] = " + costs[dest]);
+          //System.out.println("costs[destination node " + dest + "] = " + costs[dest]);
           newCost = costs[dest] + packet.get_costs()[dest];
           if(newCost < newMinCost) {
             newMinCost = newCost;
-            //System.out.println("new minimum cost = " + newMinCost);
+            System.out.println("new minimum cost for destination " + dest + " = " + newMinCost + " (" + costs[dest] + " + " + packet.get_costs()[dest] + ")");
           }
           calculatedCosts[dest] = newMinCost;
         }
         for(int dest = 0; dest < costs.length; dest++) {
           if(calculatedCosts[dest] < costs[dest]) {
             costs[dest] = calculatedCosts[dest];
-            //System.out.println("New updated cost for destination " + dest + " = " + calculatedCosts[dest]);
+            System.out.println("New updated cost for destination " + dest + " = " + calculatedCosts[dest]);
+            nodeTable[index][dest] = costs[dest];
+            throughNode = packet.get_source();
+            System.out.println("Going through node " + throughNode);
           }
         }
 
@@ -229,13 +239,12 @@ public class Entity {
 //            }
         }
 
-
-        */
-
-
         for (int i = 0; i < costs.length; i++) {
             costs[i] = this.nodeTable[index][i];
         }
+
+
+        */
 
         for (int i = 0; i < neighbors.length; i++) {
 //            if (i == this.index) continue;
