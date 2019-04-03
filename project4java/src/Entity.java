@@ -33,8 +33,8 @@ public class Entity {
     public static final int maxVal = 999;
     public boolean debug = true;
     public boolean debugConstructor = false && debug;
-    public boolean debugInit = true && debug;
-    public boolean debugUpdate = true && debug;
+    public boolean debugInit = false && debug;
+    public boolean debugUpdate = false && debug;
     public boolean debugCosts = false && debug;
 
     // This initialization function will be called at the beginning of the
@@ -91,7 +91,7 @@ public class Entity {
         this.neighbors = new int [numPackets];
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
-            if (this.costs[neighbor_costs[i].x] == i) this.costs = 0;
+            //if (this.costs[neighbor_costs[i].x] == i) this.costs = 0;
             if ((neighbor_costs[i].y) != this.maxVal) this.costs[neighbor_costs[i].x] = (neighbor_costs[i].y);
         }
         for (int i = 0; i < costs.length; i++){
@@ -145,6 +145,31 @@ public class Entity {
     // Return Value: This function should return an array of `Packet`s to be
     // sent from this entity (if any) to neighboring entities.
     public Packet[] update(Packet packet) {
+
+        int newMinCost = maxVal;
+        int newCost = maxVal;
+        int calculatedCosts[] = new int[costs.length];
+        Packet[] packetArr = new Packet[neighbors.length];
+        for(int dest = 0; dest < costs.length; dest++) {
+          //System.out.println("costs[" + dest + "] = " + costs[dest]);
+          newCost = costs[dest] + packet.get_costs()[dest];
+          if(newCost < newMinCost) {
+            newMinCost = newCost;
+            //System.out.println("new minimum cost = " + newMinCost);
+          }
+          calculatedCosts[dest] = newMinCost;
+        }
+        for(int dest = 0; dest < costs.length; dest++) {
+          if(calculatedCosts[dest] < costs[dest]) {
+            costs[dest] = calculatedCosts[dest];
+            //System.out.println("New updated cost for destination " + dest + " = " + calculatedCosts[dest]);
+          }
+        }
+
+
+      /*
+
+
         boolean update = false;
         int numPackets = packet.get_costs().length;
         int numPackets2 = neighbors.length;
@@ -203,9 +228,15 @@ public class Entity {
 ////                System.out.print(incomingCostArr[src] + " , ");
 //            }
         }
+
+
+        */
+
+
         for (int i = 0; i < costs.length; i++) {
             costs[i] = this.nodeTable[index][i];
         }
+
         for (int i = 0; i < neighbors.length; i++) {
 //            if (i == this.index) continue;
             Packet p = new Packet(this.neighbors[i], this.costs);
@@ -218,10 +249,10 @@ public class Entity {
             System.out.println("-------------------------------------------------------");
             System.out.println("UPDATE PACKETS");
             System.out.printf("INDEX = %d \n ", index);
-            System.out.printf("Number of neighbors = %d \n",numPackets2);
+            System.out.printf("Number of neighbors = %d \n",neighbors.length);
             System.out.println("incoming cost array");
-            for (int i = 0; i < numPackets; i++){
-                System.out.print(incomingCostArr[i] + " , ");
+            for (int i = 0; i < packet.get_costs().length; i++){
+                System.out.print(packet.get_costs()[i] + " , ");
             }
             System.out.println();
             System.out.printf("Updated entityMatrix when calling update costs on entity id =  %d. \n", index);
