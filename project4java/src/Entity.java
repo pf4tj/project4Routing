@@ -145,6 +145,7 @@ public class Entity {
 //        System.out.println("-------------------------------------------------------");
 //        System.out.println("UPDATE PACKETS");
 //        System.out.printf("INDEX = %d \n", index);
+
         boolean update = false;
         int numPackets = packet.get_costs().length;
         Packet[] packetArr = new Packet[numPackets];
@@ -157,9 +158,13 @@ public class Entity {
         System.out.println();
         int cheapest = maxVal;
         for (int dest = 0; dest < number_of_entities; dest++) {
-            if (incomingCostArr[dest] != maxVal) {
-                cheapest = incomingCostArr[dest];
-            }
+            if(dest == index || dest == packet.get_source()) continue;
+
+            if(incomingCostArr[dest] < costs[dest])
+              cheapest = incomingCostArr[dest];
+            else
+              cheapest = costs[dest];
+
             int throughNode = dest;
             System.out.printf("cheapest = %d \n", cheapest);
             System.out.printf("index = %d, cheapest = %d, dest = %d, throughNode = %d \n", index, cheapest, dest, throughNode);

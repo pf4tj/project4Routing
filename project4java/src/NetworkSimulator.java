@@ -159,6 +159,7 @@ public class NetworkSimulator {
             // Pass the packet to the correct entity
             int destination = next_packet.get_destination();
             Packet[] to_send = this.entities[destination].update(next_packet);
+            //if(to_send.length == 0) System.out.println("Trying to send an empty packet to layer 2");
             this.to_layer2(destination, to_send);
         }
 
