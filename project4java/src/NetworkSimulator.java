@@ -70,6 +70,7 @@ public class NetworkSimulator {
             // Verify packet is valid.
 
             // Check the length of the costs value
+            System.out.printf("get_costs.length() = %d, entities.length = %d \n",packet.get_costs().length,this.entities.length );
             if (packet.get_costs().length != this.entities.length) {
                 System.out.println("ERROR: Invalid packet with incorrect number of cost values.");
                 System.exit(-1);

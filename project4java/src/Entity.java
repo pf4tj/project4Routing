@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Arrays;
@@ -27,12 +28,13 @@ public class Entity {
     int number_of_entities;
     int costs[];
     int[][] nodeTable;
+    int neighbors[];
     HashMap<Integer, Integer> bestNextMap;
     public static final int maxVal = 999;
     public boolean debug = true;
     public boolean debugConstructor = false && debug;
     public boolean debugInit = false && debug;
-    public boolean debugUpdate = true && debug;
+    public boolean debugUpdate = false && debug;
     public boolean debugCosts = false && debug;
     public boolean debugForward = false & debug;
 
@@ -87,6 +89,7 @@ public class Entity {
     // sent from this entity (if any) to neighboring entities.
     public Packet[] initialize_costs(Pair<Integer, Integer> neighbor_costs[]) {
         int numPackets = neighbor_costs.length;
+        this.neighbors = new int [numPackets];
         Packet[] packetArr = new Packet[numPackets];
         for (int i = 0; i < numPackets; i++) {
             if (index == neighbor_costs[i].x) continue;
@@ -97,8 +100,9 @@ public class Entity {
             bestNextMap.put(i,i);
         }
         for (int i = 0; i < numPackets; i++) {
-            if (neighbor_costs[i].x == this.index) continue;
+//            if (neighbor_costs[i].x == this.index) continue;
             Packet p = new Packet(neighbor_costs[i].x, costs);
+            this.neighbors[i] = neighbor_costs[i].x;
             p.set_source(this.index);
             packetArr[i] = p;
         }
@@ -126,8 +130,12 @@ public class Entity {
             System.out.println("printing out packets to send");
             for (int i = 0; i < numPackets; i++) {
                 System.out.print(packetArr[i] + " , ");
+                System.out.println(neighbors[i] + ", ");
             }
             System.out.println();
+            for (int i = 0; i < numPackets; i++) {
+                System.out.println(neighbors[i] + ", ");
+            }
             System.out.println("-------------------------------------------------------");
         }
         System.out.println();
@@ -144,10 +152,11 @@ public class Entity {
     public Packet[] update(Packet packet) {
 //        System.out.println("-------------------------------------------------------");
 //        System.out.println("UPDATE PACKETS");
-//        System.out.printf("INDEX = %d \n", index);
-
+//        System.out.printf("INDEX = %d \n", index)
         boolean update = false;
         int numPackets = packet.get_costs().length;
+//        int src
+        System.out.printf("number of packets = %d \n", numPackets);
         Packet[] packetArr = new Packet[numPackets];
 //        System.out.printf("costs array length = %d \n", numPackets);
         int[] incomingCostArr = packet.get_costs();
@@ -157,9 +166,8 @@ public class Entity {
         }
         System.out.println();
         int cheapest = maxVal;
-        for (int dest = 0; dest < number_of_entities; dest++) {
-            if(dest == index || dest == packet.get_source()) continue;
-
+        for (int dest = 0; dest < costs.length; dest++) {
+//            if(dest == index || dest == packet.get_source()) continue;
             if(incomingCostArr[dest] < costs[dest])
               cheapest = incomingCostArr[dest];
             else
@@ -205,9 +213,9 @@ public class Entity {
         for (int i = 0; i < costs.length; i++) {
             costs[i] = this.nodeTable[index][i];
         }
-        for (int i = 0; i < numPackets; i++) {
-            if (i == this.index) continue;
-            Packet p = new Packet(i, this.costs);
+        for (int i = 0; i < neighbors.length; i++) {
+//            if (i == this.index) continue;
+            Packet p = new Packet(this.neighbors[i], this.costs);
             p.set_source(this.index);
             packetArr[i] = p;
         }
