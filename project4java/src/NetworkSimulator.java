@@ -70,7 +70,6 @@ public class NetworkSimulator {
             // Verify packet is valid.
 
             // Check the length of the costs value
-            //System.out.printf("get_costs.length() = %d, entities.length = %d \n",packet.get_costs().length,this.entities.length );
             if (packet.get_costs().length != this.entities.length) {
                 System.out.println("ERROR: Invalid packet with incorrect number of cost values.");
                 System.exit(-1);
@@ -116,7 +115,7 @@ public class NetworkSimulator {
                 double packet_time = packet_in_queue.x;
 
                 if (packet.get_source() == past_packet.get_source() &&
-                    packet.get_destination() == past_packet.get_destination()) {
+                        packet.get_destination() == past_packet.get_destination()) {
                     latest_time = packet_time;
                 }
             }
@@ -160,7 +159,6 @@ public class NetworkSimulator {
             // Pass the packet to the correct entity
             int destination = next_packet.get_destination();
             Packet[] to_send = this.entities[destination].update(next_packet);
-            //if(to_send.length == 0) System.out.println("Trying to send an empty packet to layer 2");
             this.to_layer2(destination, to_send);
         }
 
@@ -193,7 +191,7 @@ public class NetworkSimulator {
         System.out.println("---+------+---------");
         for (int i=0; i<this.entities.length; i++) {
             System.out.println(i + "  | " + String.format("%4s", final_costs[i].y)
-                + " | " + String.format("%8s", final_costs[i].x));
+                    + " | " + String.format("%8s", final_costs[i].x));
         }
     }
 
